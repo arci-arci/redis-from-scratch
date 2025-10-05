@@ -13,6 +13,6 @@ if __name__ == "__main__":
             raw_data: bytes = s.recv(BUFFER_SIZE)
             data: str = raw_data.decode("utf-8")
 
-            if data == b"EXIT":
+            if data == "EXIT":
                 break
 
