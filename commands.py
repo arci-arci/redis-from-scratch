@@ -1,17 +1,44 @@
-commands: dict[str, str] = {
-    "PING": "PING",
-    "EXIT": "EXIT",
-    "GET": "GET",
-    "SET": "SET",
-    "EXISTS": "EXISTS",
-    "HELP": "HELP"
+from typing import TypedDict
+
+class CommandInformationType(TypedDict):
+    name: str
+    args: int
+
+
+commands: dict[str, CommandInformationType] = {
+    "PING": {
+        "name": "PING",
+        "args": 0
+    },
+    "EXIT": {
+        "name": "EXIT",
+        "args": 0
+    },
+    "GET": {
+        "name": "GET",
+        "args": 1
+    },
+    "SET": {
+        "name": "SET",
+        "args": 2
+    },
+    "EXISTS": {
+        "name":"EXISTS",
+        "args": 1,
+    },
+    "HELP": {
+        "name": "HELP",
+        "args": 0
+    }
 }
 
 
 class ValidateCommand:
-    def is_valid(self, command: str) -> bool:
-        value: str | None = commands.get(command)
+    def is_a_command(self, command: str) -> bool:
+        value: CommandInformationType | None = commands.get(command)
         return value != None
+
+
 
 def show_help() -> None:
     print("Usage: COMMAND [<KEY>] [<VALUE>]")
