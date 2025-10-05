@@ -46,5 +46,5 @@ def show_help() -> None:
     print("EXIT                 Disconnect from the server")
     print("GET <KEY>            Get a key from the store")
     print("SET <KEY> <VALUE>    Set a key-value pair in the store")
-    print("EXISTS <KEY>         Check if a key is stored in the store, returning his value if exits, or (null).")
+    print("EXISTS <KEY>         Check if a key is stored in the store")
     print("HELP                 Show a description of all commands")
