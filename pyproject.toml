@@ -1,0 +1,12 @@
+[project]
+name = "redis-from-scrath"
+version = "0.1.0"
+description = "A simple implementation of Redis in Python"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.406",
+]
