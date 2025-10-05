@@ -8,14 +8,15 @@ if __name__ == "__main__":
         validator = ValidateCommand()
 
         while True:
-            user_input = input("repy> ")
+            user_input = input("repy> ").strip()
 
-            if not validator.is_valid(user_input): 
+            if not validator.is_a_command(user_input): 
                 print(f"Command {user_input} is not a valid command")
                 continue
             
             if user_input == "HELP":
                 show_help()
+            
 
             raw_data = bytes(user_input, "utf-8")
             s.sendall(raw_data)
