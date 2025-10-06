@@ -1,42 +1,35 @@
-from typing import TypedDict
+from enum import StrEnum
 
-class CommandInformationType(TypedDict):
-    name: str
-    args: int
+class CommandEnum(StrEnum):
+    PING = "PING"
+    EXIT = "EXIT"
+    HELP = "HELP"
+    GET = "GET"
+    EXISTS = "EXISTS"
+    SET = "SET"
 
-
-commands: dict[str, CommandInformationType] = {
-    "PING": {
-        "name": "PING",
-        "args": 0
-    },
-    "EXIT": {
-        "name": "EXIT",
-        "args": 0
-    },
-    "GET": {
-        "name": "GET",
-        "args": 1
-    },
-    "SET": {
-        "name": "SET",
-        "args": 2
-    },
-    "EXISTS": {
-        "name":"EXISTS",
-        "args": 1,
-    },
-    "HELP": {
-        "name": "HELP",
-        "args": 0
-    }
+commands: set[str] = {
+    "PING",
+    "EXIT",
+    "GET",
+    "SET",
+    "EXISTS",
+    "HELP",
 }
 
 
-class ValidateCommand:
-    def is_a_command(self, command: str) -> bool:
-        value: CommandInformationType | None = commands.get(command)
-        return value != None
+def check_user_input(user_input: str) -> bool:
+    command_struct: list[str] = user_input.split(" ")
+    command_type: str = command_struct[0]
+
+    if not __is_a_command(command_type):  
+        return False
+        
+    has_zero_args: bool = __is_a_valid_zero_args_command(user_input)
+    has_one_args: bool = __is_a_valid_one_args_command(user_input)
+    has_two_args: bool = __is_a_valid_two_args_command(user_input)
+      
+    return has_zero_args or has_one_args or has_two_args
 
 def show_help() -> None:
     print("Usage: COMMAND [<KEY>] [<VALUE>]")
@@ -48,3 +41,43 @@ def show_help() -> None:
     print("SET <KEY> <VALUE>    Set a key-value pair in the store")
     print("EXISTS <KEY>         Check if a key is stored in the store")
     print("HELP                 Show a description of all commands")
+
+def __is_a_command(command: str) -> bool:
+    return command in commands
+
+def __is_a_valid_two_args_command(command: str) -> bool:
+    command_struct: list[str] = command.split(" ", 2)
+
+    if len(command_struct) != 3:
+        return False
+    
+    command_type: str = command_struct[0]
+    is_set_command: bool = command_type == CommandEnum.SET
+
+    return is_set_command
+
+def __is_a_valid_one_args_command(command: str) -> bool:
+    command_struct: list[str] = command.split(" ", 1)
+    
+    if len(command_struct) != 2:
+        return False
+    
+    command_type: str = command_struct[0]
+    is_get_command: bool = command_type == CommandEnum.GET  
+    is_exists_command: bool = command_type == CommandEnum.EXISTS
+
+    return is_get_command or is_exists_command
+
+def __is_a_valid_zero_args_command(command: str) -> bool:
+    command_struct: list[str] = command.split(" ")
+    command_type: str = command_struct[0]
+
+    if len(command_struct) != 1:
+        return False
+    
+    is_help_command: bool = command_type == CommandEnum.HELP 
+    is_exit_command: bool = command_type == CommandEnum.EXIT 
+    is_ping_command: bool = command_type == CommandEnum.PING
+    
+    return is_help_command or is_exit_command or is_ping_command
+
