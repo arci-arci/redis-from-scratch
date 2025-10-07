@@ -7,7 +7,7 @@ storage: dict[str, str] = {}
 logger = create_logger()
 
 def __run_ping_command(conn: socket) -> None:
-    logger.info("Running 'PONG' command")
+    logger.info("Running 'PING' command")
     conn.sendall(bytes("PONG", "utf-8"))
 
 def __run_exit_command(conn: socket) -> None:
