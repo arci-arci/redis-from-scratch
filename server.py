@@ -1,4 +1,5 @@
 from socket import socket, AF_INET, SOCK_STREAM
+from commands import CommandEnum
 from commons import HOST, PORT, BUFFER_SIZE
 
 storage: dict[str, str] = {}
@@ -46,18 +47,18 @@ if __name__ == "__main__":
             command_type: str = command_struct[0]
 
             match command_type:
-                case "PING":
+                case CommandEnum.PING:
                     __run_ping_command(conn)
-                case "SET":
+                case CommandEnum.SET:
                     command_data = data.split(" ", 2)
                     __run_set_command(conn, command_data[1], command_data[2])
-                case "GET":
+                case CommandEnum.GET:
                     command_data = data.split(" ", 1)
                     __run_get_command(conn, command_data[1])
-                case "EXISTS":
+                case CommandEnum.EXISTS:
                     command_data = data.split(" ", 1)
                     __run_exists_command(conn, command_data[1])
-                case "EXIT":
+                case CommandEnum.EXIT:
                     __run_exit_command(conn)
                     break
           
