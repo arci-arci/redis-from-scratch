@@ -8,14 +8,7 @@ class CommandEnum(StrEnum):
     EXISTS = "EXISTS"
     SET = "SET"
 
-commands: set[str] = {
-    "PING",
-    "EXIT",
-    "GET",
-    "SET",
-    "EXISTS",
-    "HELP",
-}
+
 
 
 def check_user_input(user_input: str) -> bool:
@@ -43,7 +36,12 @@ def show_help() -> None:
     print("HELP                 Show a description of all commands")
 
 def __is_a_command(command: str) -> bool:
-    return command in commands
+    try:
+        CommandEnum[command]
+    except KeyError:
+        return False
+    
+    return True
 
 def __is_a_valid_two_args_command(command: str) -> bool:
     command_struct: list[str] = command.split(" ", 2)
