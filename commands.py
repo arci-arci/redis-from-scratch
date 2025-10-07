@@ -9,8 +9,6 @@ class CommandEnum(StrEnum):
     SET = "SET"
 
 
-
-
 def check_user_input(user_input: str) -> bool:
     command_struct: list[str] = user_input.split(" ")
     command_type: str = command_struct[0]
@@ -40,7 +38,6 @@ def __is_a_command(command: str) -> bool:
         CommandEnum[command]
     except KeyError:
         return False
-    
     return True
 
 def __is_a_valid_two_args_command(command: str) -> bool:
