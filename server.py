@@ -1,46 +1,46 @@
 from socket import socket, AF_INET, SOCK_STREAM
 from commands import CommandEnum
 from commons import HOST, PORT, BUFFER_SIZE
-from logconfig import create_logger
+from logconfig import create_logger, log_action
 
 storage: dict[str, str] = {}
 logger = create_logger()
 
-def __run_ping_command(conn: socket) -> None:
-    logger.info("Running 'PING' command")
-    conn.sendall(bytes("PONG", "utf-8"))
+class ActionHandler:
+    def __init__(self, conn: socket):
+        self.conn = conn
 
-def __run_exit_command(conn: socket) -> None:
-    logger.info("Running 'EXIT' command")
-    conn.sendall(bytes("EXIT", "utf-8"))
+    @log_action(CommandEnum.PING, logger)
+    def run_ping_command(self) -> None:
+        self.conn.sendall(bytes("PONG", "utf-8"))
 
-def __run_set_command(conn: socket, key: str, value: str) -> None:
-    logger.info("Running 'SET %s %s' command", key, value)
-    
-    storage[key] = value
-    conn.sendall(bytes("OK", "utf-8"))
+    @log_action(CommandEnum.EXIT, logger)
+    def run_exit_command(self) -> None:
+        self.conn.sendall(bytes("EXIT", "utf-8"))
 
-def __run_get_command(conn: socket, key: str) -> None:
-    logger.info("Running 'GET %s' command", key)
+    @log_action(CommandEnum.SET, logger)
+    def run_set_command(self, key: str, value: str) -> None:    
+        storage[key] = value
+        self.conn.sendall(bytes("OK", "utf-8"))
 
-    if key in storage:
-        value: str = storage[key]
-        logger.info("Key '%s' found", key)
-        conn.sendall(bytes(value, "utf-8"))
-    else:
-        logger.info("Key '%s' not found", key)
-        conn.sendall(bytes("(null)", "utf-8"))
+    @log_action(CommandEnum.GET, logger)
+    def run_get_command(self, key: str) -> None:
+        if key in storage:
+            value: str = storage[key]
+            logger.info("Key '%s' found", key)
+            self.conn.sendall(bytes(value, "utf-8"))
+        else:
+            logger.info("Key '%s' not found", key)
+            self.conn.sendall(bytes("(null)", "utf-8"))
 
-def __run_exists_command(conn, key: str) -> None:
-    logger.info("Running 'EXISTS %s' command", key)
-
-    if key in storage:
-        logger.info("Key '%s' found", key)
-        conn.sendall(bytes("(true)", "utf-8"))
-    else:
-        logger.info("Key '%s' not found", key)
-        conn.sendall(bytes("(false)", "utf-8"))
-
+    @log_action(CommandEnum.EXISTS, logger)
+    def run_exists_command(self, key: str) -> None:
+        if key in storage:
+            logger.info("Key '%s' found", key)
+            self.conn.sendall(bytes("(true)", "utf-8"))
+        else:
+            logger.info("Key '%s' not found", key)
+            self.conn.sendall(bytes("(false)", "utf-8"))
 
 if __name__ == "__main__":
     with socket(AF_INET, SOCK_STREAM) as s:
@@ -50,6 +50,7 @@ if __name__ == "__main__":
 
         while True:
             conn, addr = s.accept()
+            action_handler = ActionHandler(conn)
             
             while True:
                 raw_data: bytes = conn.recv(BUFFER_SIZE)
@@ -64,18 +65,19 @@ if __name__ == "__main__":
 
                 match command_type:
                     case CommandEnum.PING:
-                        __run_ping_command(conn)
+                        action_handler.run_ping_command()
                     case CommandEnum.SET:
                         command_data = data.split(" ", 2)
-                        __run_set_command(conn, command_data[1], command_data[2])
+                        action_handler.run_set_command(command_data[1], command_data[2])
                     case CommandEnum.GET:
                         command_data = data.split(" ", 1)
-                        __run_get_command(conn, command_data[1])
+                        action_handler.run_get_command(command_data[1])
                     case CommandEnum.EXISTS:
                         command_data = data.split(" ", 1)
-                        __run_exists_command(conn, command_data[1])
+                        action_handler.run_exists_command(command_data[1])
                     case CommandEnum.EXIT:
-                        __run_exit_command(conn)
+                        action_handler.run_exit_command()
+                        
                         break
             
             conn.close()
