@@ -1,4 +1,4 @@
-from enum import StrEnum
+from enum import StrEnum, IntEnum
 
 class CommandEnum(StrEnum):
     PING = "PING"
@@ -7,6 +7,11 @@ class CommandEnum(StrEnum):
     GET = "GET"
     EXISTS = "EXISTS"
     SET = "SET"
+
+class CommandLenEnum(IntEnum):
+    ONE = 1
+    TWO = 2
+    THREE = 3
 
 
 def check_user_input(user_input: str) -> bool:
