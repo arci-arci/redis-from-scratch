@@ -1,5 +1,5 @@
 from socket import socket, AF_INET, SOCK_STREAM
-from commands import CommandEnum
+from commands import CommandEnum, CommandLenEnum
 from commons import HOST, PORT, BUFFER_SIZE
 from logconfig import create_logger, log_action
 
@@ -67,17 +67,16 @@ if __name__ == "__main__":
                     case CommandEnum.PING:
                         action_handler.run_ping_command()
                     case CommandEnum.SET:
-                        command_data = data.split(" ", 2)
+                        command_data = data.split(" ", CommandLenEnum.TWO)
                         action_handler.run_set_command(command_data[1], command_data[2])
                     case CommandEnum.GET:
-                        command_data = data.split(" ", 1)
+                        command_data = data.split(" ", CommandLenEnum.ONE)
                         action_handler.run_get_command(command_data[1])
                     case CommandEnum.EXISTS:
-                        command_data = data.split(" ", 1)
+                        command_data = data.split(" ", CommandLenEnum.ONE)
                         action_handler.run_exists_command(command_data[1])
                     case CommandEnum.EXIT:
                         action_handler.run_exit_command()
-                        
                         break
             
             conn.close()
