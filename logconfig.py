@@ -5,7 +5,7 @@ from commands import CommandEnum, CommandLenEnum
 
 LOG_FILE_NAME_FORMAT = "{:%Y-%m-%d}"
 LOG_DIR_PATH = "./logs"
-LOG_MESSAGE_FORMAT = "%(asctime)s %(levelname)s --- [%(name)s]    : %(message)s"
+LOG_MESSAGE_FORMAT = "%(asctime)s %(levelname)s %(thread)d --- [%(name)s]    : %(message)s"
 
 
 def create_logger() -> Logger:
