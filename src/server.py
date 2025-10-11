@@ -39,12 +39,13 @@ class ActionHandler:
 
     @log_action(CommandEnum.EXISTS, logger)
     def run_exists_command(self, key: str) -> None:
-        if key in storage:
-            logger.info("Key '%s' found by thread %d", key, get_ident())
-            self.conn.sendall(bytes("(true)", "utf-8"))
-        else:
-            logger.info(f"Key '%s' not found by thread %d", key, get_ident())
-            self.conn.sendall(bytes("(false)", "utf-8"))
+        with lock:
+            if key in storage:
+                logger.info("Key '%s' found by thread %d", key, get_ident())
+                self.conn.sendall(bytes("(true)", "utf-8"))
+            else:
+                logger.info(f"Key '%s' not found by thread %d", key, get_ident())
+                self.conn.sendall(bytes("(false)", "utf-8"))
 
     @log_action(CommandEnum.DEL, logger)
     def run_del_command(self, key: str) -> None:
