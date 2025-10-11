@@ -1,4 +1,8 @@
 {
+  "include": ["src"],
+  "extraPaths": ["src"],
+  "venvPath": ".",
+  "venv": ".venv",
   "reportMissingImports": "error",
   "typeCheckingMode": "standard",
   "reportUnusedImport": true,

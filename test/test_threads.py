@@ -1,5 +1,9 @@
+import os
+import sys
+sys.path.append(os.path.abspath("./src"))
+
+from utility.commons import BUFFER_SIZE, HOST, PORT
 from socket import socket, AF_INET, SOCK_STREAM
-from src.utility.commons import HOST, PORT, BUFFER_SIZE
 import threading
 import random
 
