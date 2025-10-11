@@ -48,7 +48,7 @@ def __is_a_command(command: str) -> bool:
     return True
 
 def __is_a_valid_two_args_command(command: str) -> bool:
-    command_struct: list[str] = command.split(" ", 2)
+    command_struct: list[str] = command.split(" ")
 
     if len(command_struct) != 3:
         return False
@@ -59,7 +59,7 @@ def __is_a_valid_two_args_command(command: str) -> bool:
     return is_set_command
 
 def __is_a_valid_one_args_command(command: str) -> bool:
-    command_struct: list[str] = command.split(" ", 1)
+    command_struct: list[str] = command.split(" ")
     
     if len(command_struct) != 2:
         return False
