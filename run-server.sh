@@ -1,0 +1,1 @@
+uv run src/server.py

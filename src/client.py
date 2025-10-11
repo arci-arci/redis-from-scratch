@@ -1,6 +1,6 @@
 from socket import socket, AF_INET, SOCK_STREAM
-from commons import HOST, PORT, BUFFER_SIZE
-from commands import check_user_input, show_help, CommandEnum
+from utility.commons import HOST, PORT, BUFFER_SIZE
+from utility.commands import check_user_input, show_help, CommandEnum
 
 
 if __name__ == "__main__":

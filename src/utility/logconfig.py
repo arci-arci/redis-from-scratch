@@ -1,7 +1,7 @@
 from datetime import datetime
-from logging import Logger, FileHandler, StreamHandler, Formatter, getLogger, INFO
 import os
-from commands import CommandEnum, CommandLenEnum
+from logging import Logger, FileHandler, StreamHandler, Formatter, getLogger, INFO
+from utility.commands import CommandEnum, CommandLenEnum
 
 LOG_FILE_NAME_FORMAT = "{:%Y-%m-%d}"
 LOG_DIR_PATH = "./logs"

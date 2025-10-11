@@ -1,5 +1,5 @@
 from socket import socket, AF_INET, SOCK_STREAM
-from commons import HOST, PORT, BUFFER_SIZE
+from src.utility.commons import HOST, PORT, BUFFER_SIZE
 import threading
 import random
 

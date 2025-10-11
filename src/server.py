@@ -1,8 +1,8 @@
 from socket import socket, AF_INET, SOCK_STREAM
-from commands import CommandEnum
-from commons import HOST, PORT, BUFFER_SIZE
-from logconfig import create_logger, log_action
 from threading import Thread, RLock, get_ident
+from utility.commands import CommandEnum
+from utility.commons import HOST, PORT, BUFFER_SIZE
+from utility.logconfig import create_logger, log_action
 
 storage: dict[str, str] = {}
 logger = create_logger()
