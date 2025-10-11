@@ -8,8 +8,8 @@ import threading
 import random
 
 def gen_key_value():
-    keys = ["bike", "car", "truck"]
-    values = [250, 500, 750]
+    keys = ["bike", "car", "truck", "skate"]
+    values = [100, 250, 500, 750]
 
     
     random.shuffle(keys)
@@ -23,12 +23,14 @@ def gen_key_value():
 def connect() -> None:
     with socket(AF_INET, SOCK_STREAM) as s:
         s.connect((HOST, PORT))
-        commands = ["SET", "GET"]
+        commands = ["SET", "DEL", "GET"]
 
         for _ in range(2):    
             command = random.choice(commands)
+            run_amount = random.randint(2, 5)
+
             if command == "SET":
-                for _ in range(5):
+                for _ in range(run_amount):
                     key, value = gen_key_value()
                     final_command = f"{command} {key} {value}"
 
@@ -39,7 +41,7 @@ def connect() -> None:
                     data: str = raw_data.decode("utf-8")
                     print(data)
             if command == "GET":
-                 for _ in range(5):
+                 for _ in range(run_amount):
                     key, value = gen_key_value()
                     final_command = f"{command} {key}"
 
@@ -49,6 +51,18 @@ def connect() -> None:
                     raw_data: bytes = s.recv(BUFFER_SIZE)
                     data: str = raw_data.decode("utf-8")
                     print(data)
+            if command == "DEL":
+                 for _ in range(run_amount):
+                    key, value = gen_key_value()
+                    final_command = f"{command} {key}"
+
+                    raw_data = bytes(final_command, "utf-8")
+                    s.sendall(raw_data)
+
+                    raw_data: bytes = s.recv(BUFFER_SIZE)
+                    data: str = raw_data.decode("utf-8")
+                    print(data)
+            
 
 
 if __name__ == "__main__":
