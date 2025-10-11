@@ -46,6 +46,16 @@ class ActionHandler:
             logger.info(f"Key '%s' not found by thread %d", key, get_ident())
             self.conn.sendall(bytes("(false)", "utf-8"))
 
+    @log_action(CommandEnum.DEL, logger)
+    def run_del_command(self, key: str) -> None:
+        if key in storage:
+            del storage[key]
+            logger.info("Key '%s' removed by thread %d", key, get_ident())
+            self.conn.sendall(bytes("(true)", "utf-8"))
+        else:
+            logger.info(f"Key '%s' not removed by thread %d", key, get_ident())
+            self.conn.sendall(bytes("(false)", "utf-8"))
+
 
 def start_connection(conn: socket, addr: tuple[str, int]):
     logger.info(f"Client connected from {addr[0]}:{addr[1]}")
@@ -74,6 +84,9 @@ def start_connection(conn: socket, addr: tuple[str, int]):
             case CommandEnum.GET:
                 command_data = data.split(" ", 1)
                 action_handler.run_get_command(command_data[1])
+            case CommandEnum.DEL:
+                command_data = data.split(" ", 1)
+                action_handler.run_del_command(command_data[1])
             case CommandEnum.EXISTS:
                 command_data = data.split(" ", 1)
                 action_handler.run_exists_command(command_data[1])

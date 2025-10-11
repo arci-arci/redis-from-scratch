@@ -7,6 +7,7 @@ class CommandEnum(StrEnum):
     GET = "GET"
     EXISTS = "EXISTS"
     SET = "SET"
+    DEL = "DEL"
 
 class CommandLenEnum(IntEnum):
     ONE = 1
@@ -34,6 +35,7 @@ def show_help() -> None:
     print("PING                 Check if the server is on")
     print("EXIT                 Disconnect from the server")
     print("GET <KEY>            Get a key from the store")
+    print("DEL <KEY>            Remove a key from the store")
     print("SET <KEY> <VALUE>    Set a key-value pair in the store")
     print("EXISTS <KEY>         Check if a key is stored in the store")
     print("HELP                 Show a description of all commands")
@@ -64,9 +66,10 @@ def __is_a_valid_one_args_command(command: str) -> bool:
     
     command_type: str = command_struct[0]
     is_get_command: bool = command_type == CommandEnum.GET  
+    is_del_command: bool = command_type == CommandEnum.DEL  
     is_exists_command: bool = command_type == CommandEnum.EXISTS
 
-    return is_get_command or is_exists_command
+    return is_get_command or is_exists_command or is_del_command
 
 def __is_a_valid_zero_args_command(command: str) -> bool:
     command_struct: list[str] = command.split(" ")
