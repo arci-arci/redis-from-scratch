@@ -142,7 +142,7 @@ def start_connection(conn: socket, addr: tuple[str, int]) -> None:
         logger.info("Data received: '%s'", data)
 
         command_struct: list[str] = data.split(" ")
-        command_type: str = command_struct[0]
+        command_type: str = command_struct[0].upper()
 
         match command_type:
             case CommandEnum.PING:

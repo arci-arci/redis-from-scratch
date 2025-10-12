@@ -17,7 +17,7 @@ class CommandLenEnum(IntEnum):
 
 def check_user_input(user_input: str) -> bool:
     command_struct: list[str] = user_input.split(" ")
-    command_type: str = command_struct[0]
+    command_type: str = command_struct[0].upper()
 
     if not __is_a_command(command_type):  
         return False
@@ -53,7 +53,7 @@ def __is_a_valid_two_args_command(command: str) -> bool:
     if len(command_struct) != 3:
         return False
     
-    command_type: str = command_struct[0]
+    command_type: str = command_struct[0].upper()
     is_set_command: bool = command_type == CommandEnum.SET
 
     return is_set_command
@@ -64,7 +64,7 @@ def __is_a_valid_one_args_command(command: str) -> bool:
     if len(command_struct) != 2:
         return False
     
-    command_type: str = command_struct[0]
+    command_type: str = command_struct[0].upper()
     is_get_command: bool = command_type == CommandEnum.GET  
     is_del_command: bool = command_type == CommandEnum.DEL  
     is_exists_command: bool = command_type == CommandEnum.EXISTS
@@ -73,11 +73,11 @@ def __is_a_valid_one_args_command(command: str) -> bool:
 
 def __is_a_valid_zero_args_command(command: str) -> bool:
     command_struct: list[str] = command.split(" ")
-    command_type: str = command_struct[0]
 
     if len(command_struct) != 1:
         return False
     
+    command_type: str = command_struct[0].upper()
     is_help_command: bool = command_type == CommandEnum.HELP 
     is_exit_command: bool = command_type == CommandEnum.EXIT 
     is_ping_command: bool = command_type == CommandEnum.PING

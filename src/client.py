@@ -14,7 +14,7 @@ if __name__ == "__main__":
                 continue
             
             command_struct: list[str] = user_input.split(" ")
-            command_type: str = command_struct[0]
+            command_type: str = command_struct[0].upper()
 
             if command_type == CommandEnum.HELP:
                 show_help()
