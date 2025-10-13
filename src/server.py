@@ -2,7 +2,7 @@ from socket import socket, AF_INET, SOCK_STREAM
 from threading import Event, Thread, RLock, get_ident
 from utility.commands import CommandEnum
 from utility.commons import HOST, PORT, BUFFER_SIZE
-from utility.logconfig import LogSinleton, log_action
+from utility.logconfig import LogSingleton, log_action
 from typing import TypedDict
 import time
 import datetime
@@ -13,7 +13,7 @@ class Element(TypedDict):
 
 storage: dict[str, Element] = {}
 lock = RLock()
-logger = LogSinleton.create_logger()
+logger = LogSingleton.create_logger()
 exit_event = Event()
 
 DEFAULT_TTL: int = 60 # in seconds

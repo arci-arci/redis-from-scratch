@@ -7,7 +7,7 @@ LOG_FILE_NAME_FORMAT = "{:%Y-%m-%d}"
 LOG_DIR_PATH = "./logs"
 LOG_MESSAGE_FORMAT = "%(asctime)s %(levelname)s %(thread)d --- [%(module)-12s] : %(message)-12s"
 
-class LogSinleton:
+class LogSingleton:
     logger: Logger | None = None
 
     @classmethod
@@ -35,7 +35,7 @@ class LogSinleton:
 def log_action(commad: CommandEnum):
     def loggable(decoreted_fn):
         def wrapper(*args):
-            logger = LogSinleton.create_logger()
+            logger = LogSingleton.create_logger()
 
             match len(args):
                 case CommandLenEnum.ONE:
