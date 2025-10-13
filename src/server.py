@@ -16,7 +16,7 @@ lock = RLock()
 logger = LogSinleton.create_logger()
 exit_event = Event()
 
-DEFAULT_TTL: int = 5 # in seconds
+DEFAULT_TTL: int = 60 # in seconds
 TTL_INTERVAL: float = 60.0 # check every minute
 
 class ActionHandler:
@@ -76,7 +76,6 @@ class ActionHandler:
         logger.info("Key '%s' found by thread %d", key, get_ident())
         self.conn.sendall(bytes("(true)", "utf-8"))
 
-
     @log_action(CommandEnum.DEL)
     def run_del_command(self, key: str) -> None:
         with lock:
@@ -93,6 +92,25 @@ class ActionHandler:
             del storage[key]
             logger.info("Key '%s' removed by thread %d", key, get_ident())
             self.conn.sendall(bytes("(true)", "utf-8"))
+
+    @log_action(CommandEnum.EXPIRE)
+    def run_expire_command(self, key: str, exp: int) -> None:
+        with lock:
+            if key not in storage:
+                logger.info(f"Key '%s' not found by thread %d", key, get_ident())
+                self.conn.sendall(bytes("ERR", "utf-8"))
+                return
+
+            if is_exprired(key):
+                logger.info("Key '%s' removed by thread %d", key, get_ident())
+                self.conn.sendall(bytes("ERR", "utf-8"))
+                return
+
+            new_ttl = datetime.datetime.now() + datetime.timedelta(seconds=exp)
+            logger.info("New ttl %s for key '%s'", new_ttl.time(), key)
+            storage[key]["ttl"] = new_ttl.time()
+            logger.info("Expiration time updated for key '%s' by thread %d", key, get_ident())
+            self.conn.sendall(bytes("OK", "utf-8"))
 
 
 def is_exprired(key: str) -> bool:
@@ -156,8 +174,11 @@ def start_connection(conn: socket, addr: tuple[str, int]) -> None:
                 command_data = data.split(" ", 1)
                 action_handler.run_exists_command(command_data[1])
             case CommandEnum.EXPIRE:
-                command_data = data.split(" ", 1)
-                logger.info(command_data)
+                command_data = data.split(" ", 2)
+                action_handler.run_expire_command(
+                    command_data[1],
+                    int(command_data[2]),
+                )
             case CommandEnum.EXIT:
                 action_handler.run_exit_command()
                 break
