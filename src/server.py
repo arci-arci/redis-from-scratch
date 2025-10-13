@@ -1,12 +1,11 @@
 from socket import socket, AF_INET, SOCK_STREAM
-from threading import Thread, RLock, get_ident
+from threading import Event, Thread, RLock, get_ident
 from utility.commands import CommandEnum
 from utility.commons import HOST, PORT, BUFFER_SIZE
 from utility.logconfig import LogSinleton, log_action
 from typing import TypedDict
 import time
 import datetime
-from queue import Queue, Empty
 
 class Element(TypedDict):
     value: str
@@ -14,8 +13,8 @@ class Element(TypedDict):
 
 storage: dict[str, Element] = {}
 lock = RLock()
-event_queue: Queue[str] = Queue(1)
 logger = LogSinleton.create_logger()
+exit_event = Event()
 
 DEFAULT_TTL: int = 5 # in seconds
 TTL_INTERVAL: float = 60.0 # check every minute
@@ -36,8 +35,14 @@ class ActionHandler:
     def run_set_command(self, key: str, value: str) -> None:
         with lock:
             ttl = datetime.datetime.now() + datetime.timedelta(seconds=DEFAULT_TTL)
+            is_present: bool = key in storage
             storage[key] = {"ttl": ttl.time(), "value": value}
-            logger.info(f"{key} -> {storage[key]} changed by {get_ident()}")
+
+            if not is_present:
+                logger.info(f"{key} -> {storage[key]} added by {get_ident()}")
+            else:
+                logger.info(f"{key} -> {storage[key]} changed by {get_ident()}")
+
             self.conn.sendall(bytes("OK", "utf-8"))
             
     @log_action(CommandEnum.GET)
@@ -97,11 +102,8 @@ def is_exprired(key: str) -> bool:
 def clean() -> None:
     start_time = time.monotonic()
 
-    while True:
-        if can_stop_cleaning_thread():
-            break
-
-        time.sleep(TTL_INTERVAL - ((time.monotonic() - start_time) % TTL_INTERVAL))
+    while not exit_event.is_set():
+        exit_event.wait(TTL_INTERVAL - ((time.monotonic() - start_time) % TTL_INTERVAL))
         prev_size: int = len(storage)
 
         with lock:
@@ -118,15 +120,6 @@ def clean() -> None:
             logger.info(f"Cleaning done. Removed {prev_size - new_size} element(s). Size reduced by a {difference}%")
             
     logger.info("Stopping clean thread...")
-
-def can_stop_cleaning_thread() -> bool:
-    try:
-        if event_queue.get_nowait() == "stop":
-            return True
-    except Empty:
-        return False
-    
-    return False
 
 
 def start_connection(conn: socket, addr: tuple[str, int]) -> None:
@@ -184,5 +177,5 @@ if __name__ == "__main__":
                 t: Thread = Thread(target=start_connection, args=(conn, addr))
                 t.start()
         except KeyboardInterrupt:
-            event_queue.put("stop")
+            exit_event.set()
             logger.info("Stopping server...")
