@@ -155,6 +155,9 @@ def start_connection(conn: socket, addr: tuple[str, int]) -> None:
             case CommandEnum.EXISTS:
                 command_data = data.split(" ", 1)
                 action_handler.run_exists_command(command_data[1])
+            case CommandEnum.EXPIRE:
+                command_data = data.split(" ", 1)
+                logger.info(command_data)
             case CommandEnum.EXIT:
                 action_handler.run_exit_command()
                 break

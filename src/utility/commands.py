@@ -8,6 +8,7 @@ class CommandEnum(StrEnum):
     EXISTS = "EXISTS"
     SET = "SET"
     DEL = "DEL"
+    EXPIRE = "EXPIRE"
 
 class CommandLenEnum(IntEnum):
     ONE = 1
@@ -32,13 +33,14 @@ def show_help() -> None:
     print("Usage: COMMAND [<KEY>] [<VALUE>]")
 
     print("\nAvaiable commands:\n")
-    print("PING                 Check if the server is on")
-    print("EXIT                 Disconnect from the server")
-    print("GET <KEY>            Get a key from the store")
-    print("DEL <KEY>            Remove a key from the store")
-    print("SET <KEY> <VALUE>    Set a key-value pair in the store")
-    print("EXISTS <KEY>         Check if a key is stored in the store")
-    print("HELP                 Show a description of all commands")
+    print("PING                   Check if the server is on")
+    print("EXIT                   Disconnect from the server")
+    print("GET <KEY>              Get a key from the store")
+    print("DEL <KEY>              Remove a key from the store")
+    print("SET <KEY> <VALUE>      Set a key-value pair in the store")
+    print("EXPIRE <KEY> <TIME>    Set an expiration time equal to TIME seconds on a key")
+    print("EXISTS <KEY>           Check if a key is stored in the store")
+    print("HELP                   Show a description of all commands")
 
 def __is_a_command(command: str) -> bool:
     try:
@@ -55,8 +57,9 @@ def __is_a_valid_two_args_command(command: str) -> bool:
     
     command_type: str = command_struct[0].upper()
     is_set_command: bool = command_type == CommandEnum.SET
+    is_expire_command: bool = command_type == CommandEnum.EXPIRE
 
-    return is_set_command
+    return is_set_command or is_expire_command
 
 def __is_a_valid_one_args_command(command: str) -> bool:
     command_struct: list[str] = command.split(" ")

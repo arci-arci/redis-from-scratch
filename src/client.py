@@ -2,7 +2,6 @@ from socket import socket, AF_INET, SOCK_STREAM
 from utility.commons import HOST, PORT, BUFFER_SIZE
 from utility.commands import check_user_input, show_help, CommandEnum
 
-
 if __name__ == "__main__":
     with socket(AF_INET, SOCK_STREAM) as s:
         s.connect((HOST, PORT))
@@ -19,6 +18,12 @@ if __name__ == "__main__":
             if command_type == CommandEnum.HELP:
                 show_help()
                 continue
+            
+            if command_type == CommandEnum.EXPIRE:
+                duration: str = command_struct[2]
+                if not duration.isnumeric():
+                    print("Second argument must be a number")
+                    continue
 
             raw_data = bytes(user_input, "utf-8")
             s.sendall(raw_data)
