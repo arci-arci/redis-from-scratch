@@ -19,8 +19,15 @@ The client is an interactive CLI where you use the send commands and the server 
 - `DEL`: Remove a key, if exists;
 - `EXPIRE`: Set an expiration time, in seconds, on a key.
 
+## How to run
+
+1. [Install](https://docs.astral.sh/uv/getting-started/installation/) the uv package and project manager;
+2. Create a new virtual environment using the `uv venv` command;
+3. Run `sh run-server.sh` command to run the server. During this step, uv should install automatically all the project's dependencies;
+4. Run `sh client-server.sh` command to run the client.
 
 ## Next Steps
 - Adding Pub/Sub commands
 - Limit the number of concurrent connections
 - Adding commands for manipulating Lists, Sets and Hash Tables
+
