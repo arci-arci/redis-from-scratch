@@ -1,5 +1,5 @@
 # Redis from scratch in Python
-A basic implementation on how redis work made in Python.
+A basic implementation on how Redis works made in Python.
 
 ## Description
 The aim of this project is to have a better understanding on the Python programming language and, how to handle multiple 
@@ -33,5 +33,6 @@ The client is an interactive CLI where you use the send commands and the server 
 - Adding Pub/Sub commands
 - Limit the number of concurrent connections
 - Adding commands for manipulating Lists, Sets and Hash Tables
+
 
 
