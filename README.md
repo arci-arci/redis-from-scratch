@@ -23,11 +23,15 @@ The client is an interactive CLI where you use the send commands and the server 
 
 1. [Install](https://docs.astral.sh/uv/getting-started/installation/) the uv package and project manager;
 2. Create a new virtual environment using the `uv venv` command;
-3. Run `sh run-server.sh` command to run the server. During this step, uv should install automatically all the project's dependencies;
-4. Run `sh client-server.sh` command to run the client.
+3. Optional: Create an `.env` file in the root of the folder and setup the following values:
+    - `RE_HOST`: IP address of the server, by default its localhost;
+    - `RE_PORT_NUMBER`: Port number of the server, by default its 6969;
+5. Run `sh run-server.sh` command to run the server. During this step, uv should install automatically all the project's dependencies;
+6. Run `sh client-server.sh` command to run the client.
 
 ## Next Steps
 - Adding Pub/Sub commands
 - Limit the number of concurrent connections
 - Adding commands for manipulating Lists, Sets and Hash Tables
+
 
